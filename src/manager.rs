@@ -19,7 +19,7 @@ impl LicenseManager {
     }
 }
 
-impl LicenseGenerator for LicenseManager {
+impl <'a>LicenseGenerator<'a> for LicenseManager {
     fn generate_license(&self, user_id: &str, days: u64) -> e_utils::Result<LicenseInfo> {
         let license_key = self.protocol.generate(days);
         let expire_time = self.protocol.verify(&license_key)?;
@@ -31,9 +31,9 @@ impl LicenseGenerator for LicenseManager {
         })
     }
 
-    fn generate_batch_licenses(&self, user_ids: &[String], days: u64) -> e_utils::Result<Vec<LicenseInfo>> {
+    fn generate_batch_licenses(&self, user_ids: impl IntoIterator<Item = &'a str>, days: u64) -> e_utils::Result<Vec<LicenseInfo>> {
         user_ids
-            .iter()
+            .into_iter()
             .map(|user_id| self.generate_license(user_id, days))
             .collect()
     }

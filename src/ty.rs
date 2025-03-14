@@ -5,11 +5,11 @@ pub trait LicenseProtocol {
     fn verify(&self, license: &str) -> e_utils::Result<DateTime<FixedOffset>>;
 }
 
-pub trait LicenseGenerator {
-    fn generate_license(&self, user_id: &str, days: u64) -> e_utils::Result<LicenseInfo>;
+pub trait LicenseGenerator<'a> {
+    fn generate_license(&'a self, user_id: &str, days: u64) -> e_utils::Result<LicenseInfo>;
     fn generate_batch_licenses(
         &self,
-        user_ids: &[String],
+        user_ids: impl IntoIterator<Item = &'a str>,
         days: u64,
     ) -> e_utils::Result<Vec<LicenseInfo>>;
 }
