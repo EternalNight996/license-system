@@ -20,8 +20,8 @@ impl LicenseManager {
 }
 
 impl <'a>LicenseGenerator<'a> for LicenseManager {
-    fn generate_license(&self, user_id: &str, days: u64) -> e_utils::Result<LicenseInfo> {
-        let license_key = self.protocol.generate(days);
+    fn generate_license(&self, user_id: &str, hours: u64) -> e_utils::Result<LicenseInfo> {
+        let license_key = self.protocol.generate(hours);
         let expire_time = self.protocol.verify(&license_key)?;
         
         Ok(LicenseInfo {
@@ -31,10 +31,10 @@ impl <'a>LicenseGenerator<'a> for LicenseManager {
         })
     }
 
-    fn generate_batch_licenses(&self, user_ids: impl IntoIterator<Item = &'a str>, days: u64) -> e_utils::Result<Vec<LicenseInfo>> {
+    fn generate_batch_licenses(&self, user_ids: impl IntoIterator<Item = &'a str>, hours: u64) -> e_utils::Result<Vec<LicenseInfo>> {
         user_ids
             .into_iter()
-            .map(|user_id| self.generate_license(user_id, days))
+            .map(|user_id| self.generate_license(user_id, hours))
             .collect()
     }
 }
@@ -45,12 +45,12 @@ impl LicenseValidator for LicenseManager {
         
         match self.protocol.verify(license_key) {
             Ok(expire) => {
-                let days_remaining = expire.signed_duration_since(now).num_days();
+                let days_remaining = expire.signed_duration_since(now).num_hours();
                 Ok(LicenseValidationResult {
                     user_id: String::new(), // 单个验证时可能无法获取用户ID
                     is_valid: days_remaining > 0,
                     message: if days_remaining > 0 {
-                        format!("授权有效，过期时间: {}", expire)
+                        format!("授权有效，剩余小时数: {}，过期时间: {}", days_remaining, expire)
                     } else {
                         "授权已过期".to_string()
                     },

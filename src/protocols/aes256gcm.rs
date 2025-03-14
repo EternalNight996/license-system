@@ -28,7 +28,7 @@ const NONCE_SIZE: usize = 12; // AES-GCM 使用12字节随机数
 ///         "user3",
 ///     ];
 ///     println!("生成批量授权...");
-///     let licenses = license_manager.generate_batch_licenses(user_ids, 300)?;
+///     let licenses = license_manager.generate_batch_licenses(user_ids,2)?;
 ///     for license in &licenses {
 ///         println!(
 ///             "用户: {}, 授权码: {}, 过期时间: {}",
@@ -45,7 +45,7 @@ const NONCE_SIZE: usize = 12; // AES-GCM 使用12字节随机数
 ///     println!("\n验证单个授权...");
 ///     if let Some(first_license) = licenses.first() {
 ///         match license_manager.verify_license(&first_license.license_key) {
-///             Ok(res) => println!("验证结果: {} 剩余{}天", res.message, res.days_remaining),
+///             Ok(res) => println!("验证结果: {} 剩余{}小时", res.message, res.days_remaining),
 ///             Err(e) => println!("验证失败: {}", e),
 ///         }
 ///     }
@@ -66,7 +66,7 @@ impl LicenseProtocol for AesGcmProtocol {
   fn generate(&self, days: u64) -> String {
     let nonce = e_utils::algorithm!([u8; NONCE_SIZE]);
 
-    let expire_time = (Utc::now() + Duration::days(days as i64)).timestamp();
+    let expire_time = (Utc::now() + Duration::hours(days as i64)).timestamp();
     let mut data = expire_time.to_le_bytes().to_vec();
 
     // 添加校验码
@@ -122,7 +122,7 @@ impl LicenseProtocol for AesGcmProtocol {
     let expire = DateTime::from_timestamp(expire_time, 0).ok_or("Invalid timestamp")?.with_timezone(&timezone);
 
     if Utc::now().with_timezone(&timezone) > expire {
-      return Err("License expired".into());
+      return Err("授权已过期".into());
     }
 
     Ok(expire)

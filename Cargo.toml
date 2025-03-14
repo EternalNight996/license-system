@@ -15,7 +15,7 @@ license-system = { path = "./", features = ["chacha20","aes256gcm"] }
 
 [package]
 name = "license-system"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Eternal(梦游) <EternalNightYeah2@yeah.net>"]
 edition = "2021"
 rust-version = "1.78.0"

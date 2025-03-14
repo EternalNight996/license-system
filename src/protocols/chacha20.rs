@@ -31,7 +31,7 @@ const NONCE_SIZE: usize = 24;
 ///         "user3",
 ///     ];
 ///     println!("生成批量授权...");
-///     let licenses = license_manager.generate_batch_licenses(user_ids, 300)?;
+///     let licenses = license_manager.generate_batch_licenses(user_ids, 2)?;
 ///     for license in &licenses {
 ///         println!(
 ///             "用户: {}, 授权码: {}, 过期时间: {}",
@@ -48,7 +48,7 @@ const NONCE_SIZE: usize = 24;
 ///     println!("\n验证单个授权...");
 ///     if let Some(first_license) = licenses.first() {
 ///         match license_manager.verify_license(&first_license.license_key) {
-///             Ok(res) => println!("验证结果: {} 剩余{}天", res.message, res.days_remaining),
+///             Ok(res) => println!("验证结果: {} 剩余{}小时", res.message, res.hours_remaining),
 ///             Err(e) => println!("验证失败: {}", e),
 ///         }
 ///     }
@@ -67,10 +67,10 @@ impl ChaCha20Protocol {
 
 impl LicenseProtocol for ChaCha20Protocol {
   // 生成许可证（约比AES方案节省30%资源）
-  fn generate(&self, days: u64) -> String {
+  fn generate(&self, hours: u64) -> String {
     let nonce = e_utils::algorithm!([u8; NONCE_SIZE]);
 
-    let expire_time = (Utc::now() + Duration::days(days as i64)).timestamp();
+    let expire_time = (Utc::now() + Duration::hours(hours as i64)).timestamp();
     let mut data = expire_time.to_le_bytes().to_vec();
 
     // 添加简单校验码
