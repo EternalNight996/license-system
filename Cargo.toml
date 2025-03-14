@@ -11,7 +11,7 @@ aes-gcm = { version = "0.10", optional = true }
 e-utils = { version = "0.4", features = ["base64", "chrono", "algorithm"] }
 
 [dev-dependencies]
-license-system = { version = "*", path = "./", features = ["chacha20","aes256gcm"] }
+license-system = { path = "./", features = ["chacha20","aes256gcm"] }
 
 [package]
 name = "license-system"

@@ -23,12 +23,12 @@ const NONCE_SIZE: usize = 12; // AES-GCM 使用12字节随机数
 ///     let license_manager = LicenseManager::new(protocol, 8)?;
 ///     // 测试批量生成
 ///     let user_ids = vec![
-///         "user1".to_string(),
-///         "user2".to_string(),
-///         "user3".to_string(),
+///         "user1",
+///         "user2",
+///         "user3",
 ///     ];
 ///     println!("生成批量授权...");
-///     let licenses = license_manager.generate_batch_licenses(&user_ids, 300)?;
+///     let licenses = license_manager.generate_batch_licenses(user_ids, 300)?;
 ///     for license in &licenses {
 ///         println!(
 ///             "用户: {}, 授权码: {}, 过期时间: {}",
