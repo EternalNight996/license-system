@@ -1,0 +1,33 @@
+[features]
+chacha20 = ["chacha20poly1305", "crc32fast"]
+aes256gcm = ["aes-gcm"]
+default = ["chacha20"]
+
+
+[dependencies]
+chacha20poly1305 = { version = "0.9", optional = true }
+crc32fast = { version = "1.3", optional = true }
+aes-gcm = { version = "0.10", optional = true }
+e-utils = { version = "0.4", features = ["base64", "chrono", "algorithm"] }
+
+[dev-dependencies]
+license-system = { version = "*", path = "./", features = ["chacha20","aes256gcm"] }
+
+[package]
+name = "license-system"
+version = "0.1.0"
+authors = ["Eternal(梦游) <EternalNightYeah2@yeah.net>"]
+edition = "2021"
+rust-version = "1.78.0"
+license-file = "LICENSE"
+homepage = "https://gitee.com/eternalnight996"
+description = "授权协议框架"
+documentation = "https://docs.rs/license-system"
+keywords = ["system", "license","chacha20","aes"]
+categories = [
+    "os::windows-apis",
+    "development-tools::debugging",
+    "command-line-utilities",
+]
+include = ["src/", "*.md", "LICENSE", "Cargo.toml", "COPYRIGHT"]
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
