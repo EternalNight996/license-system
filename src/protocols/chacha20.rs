@@ -1,6 +1,6 @@
 use crate::ty::*;
 use chacha20poly1305::{
-  aead::{Aead, NewAead},
+  aead::{Aead, Key, KeyInit},
   XChaCha20Poly1305, XNonce,
 };
 use crc32fast::hash as crc32;
@@ -78,7 +78,8 @@ impl LicenseProtocol for ChaCha20Protocol {
     data.extend_from_slice(&checksum.to_le_bytes());
 
     // 轻量加密
-    let cipher = XChaCha20Poly1305::new_from_slice(&self.secret_key).unwrap();
+    let key = Key::<XChaCha20Poly1305>::from_slice(&self.secret_key);
+    let cipher = XChaCha20Poly1305::new(key);
     let ciphertext = cipher.encrypt(&nonce.into(), &*data).unwrap();
 
     let mut output = Vec::with_capacity(NONCE_SIZE + ciphertext.len());
@@ -105,7 +106,8 @@ impl LicenseProtocol for ChaCha20Protocol {
     }
 
     let (nonce, ciphertext) = data.split_at(NONCE_SIZE);
-    let cipher = XChaCha20Poly1305::new_from_slice(&self.secret_key).unwrap();
+    let key = Key::<XChaCha20Poly1305>::from_slice(&self.secret_key);
+    let cipher = XChaCha20Poly1305::new(key);
 
     let plaintext = cipher.decrypt(XNonce::from_slice(nonce), ciphertext).map_err(|_| "Decryption failed")?;
 
