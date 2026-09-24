@@ -8,7 +8,8 @@ default = ["chacha20"]
 chacha20poly1305 = { version = "0.10", optional = true }
 crc32fast = { version = "1.3", optional = true }
 aes-gcm = { version = "0.10", optional = true }
-e-utils = { version = "0.4", features = ["base64", "chrono", "algorithm"] }
+# e-utils: 跟随主项目版本(本地 path)
+e-utils = { version = "0.5", path = "../e-utils", features = ["base64", "chrono", "algorithm"] }
 
 [dev-dependencies]
 license-system = { path = "./", features = ["chacha20","aes256gcm"] }
